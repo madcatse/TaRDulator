@@ -15,7 +15,7 @@ REQUIRED = (
     'help/index.ru.html', 'help/index.en.html', 'help/help.css',
     'licenses/SkoolKit-GPL-3.0.txt', 'licenses/Z80to-MIT.txt',
     'licenses/Python.txt', 'licenses/PyInstaller.txt', 'licenses/Spectrum-ROM.txt',
-    'LICENSING.md', 'THIRD_PARTY.md', 'CHANGELOG.md', 'USAGE.md',
+    'LICENSE', 'source/LICENSE', 'README.md', 'LICENSING.md', 'THIRD_PARTY.md', 'CHANGELOG.md', 'USAGE.md',
     'source/.github/workflows/windows.yml', 'source/releases/v' + VERSION + '.md',
     'source/src/tape_catalog.py', 'source/src/menu_font.bin',
     'source/assets/win91-font.bin', 'source/assets/win91-font.json',

@@ -87,7 +87,8 @@ jobs:
         with:
           name: TaRDulator-v${{ needs.build.outputs.version }}-win-x64
           path: release-artifacts
-      - name: Create the reviewed release or a draft
+      - name: Create the reviewed release or prepare its promotion
+        id: release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -100,7 +101,21 @@ jobs:
           test -f "$notes" || { echo "No release notes for $tag; build artifact is available."; exit 0; }
           releases=$(gh api --paginate "repos/$GH_REPO/releases?per_page=100" --jq '.[].tag_name')
           if printf '%s\n' "$releases" | grep -Fxq "$tag"; then
-            echo "Release $tag already exists; its files will not be replaced."
+            config="releases/$tag.json"
+            if test -f "$config" && jq -e '.publish == true and .prerelease == false and .refresh_documentation == true' "$config" >/dev/null; then
+              is_preview=$(gh release view "$tag" --json isPrerelease --jq .isPrerelease)
+              if test "$is_preview" = true; then
+                test "$tag" = v0.10.1
+                expected=$(jq -r .previous_archive_sha256 "$config")
+                mkdir -p preview-original official-release uploaded-check
+                gh release download "$tag" --pattern 'TaRDulator-v0.10.1-win-x64.zip' --pattern SHA256SUMS.txt --dir preview-original
+                (cd preview-original && sha256sum --check SHA256SUMS.txt)
+                python3 scripts/refresh_release_docs.py preview-original/TaRDulator-v0.10.1-win-x64.zip --expected-sha256 "$expected" --output-dir official-release
+                echo "promote=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            fi
+            echo "Release $tag already exists; no publication changes requested."
             exit 0
           fi
           (cd release-artifacts && sha256sum --check SHA256SUMS.txt)
@@ -119,3 +134,27 @@ jobs:
             gh release edit "$tag" --draft=false
           fi
           gh release view "$tag" --json url,isDraft,isPrerelease,tagName,assets
+      - name: Preserve the original preview before promotion
+        if: steps.release.outputs.promote == 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: TaRDulator-v0.10.1-original-preview
+          path: preview-original/*
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 90
+      - name: Publish and verify the official release
+        if: steps.release.outputs.promote == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release upload v0.10.1 official-release/TaRDulator-v0.10.1-win-x64.zip official-release/SHA256SUMS.txt --clobber
+          gh release download v0.10.1 --pattern 'TaRDulator-v0.10.1-win-x64.zip' --pattern SHA256SUMS.txt --dir uploaded-check
+          (cd uploaded-check && sha256sum --check SHA256SUMS.txt)
+          cmp official-release/SHA256SUMS.txt uploaded-check/SHA256SUMS.txt
+          cmp official-release/TaRDulator-v0.10.1-win-x64.zip uploaded-check/TaRDulator-v0.10.1-win-x64.zip
+          gh release edit v0.10.1 --title "TaRDulator 0.10.1" --notes-file releases/v0.10.1.md --prerelease=false --latest
+          gh release view v0.10.1 --json url,isDraft,isPrerelease,tagName,assets

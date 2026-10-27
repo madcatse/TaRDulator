@@ -39,9 +39,11 @@ Copy-Item -LiteralPath '.tools\z80to\Z80to.exe' -Destination 'dist\TaRDulator\en
 Copy-Item -LiteralPath '.tools\z80to\LICENSE' -Destination 'dist\TaRDulator\licenses\Z80to-MIT.txt'
 Copy-Item -LiteralPath '.tools\python-packages\skoolkit-10.1.dist-info\licenses\COPYING' -Destination 'dist\TaRDulator\licenses\SkoolKit-GPL-3.0.txt'
 Copy-Item -Path 'licenses\*' -Destination 'dist\TaRDulator\licenses' -Force
-Copy-Item -LiteralPath 'README.md','USAGE.md','CONTRIBUTING.md','THIRD_PARTY.md','VALIDATION.md','LOADING_STRATEGIES.md','ESCAPE_COMPATIBILITY.md','CHANGELOG.md','LICENSING.md','RELEASING.md' -Destination 'dist\TaRDulator'
+Copy-Item -LiteralPath 'LICENSE','README.md','USAGE.md','CONTRIBUTING.md','THIRD_PARTY.md','VALIDATION.md','LOADING_STRATEGIES.md','ESCAPE_COMPATIBILITY.md','CHANGELOG.md','LICENSING.md','RELEASING.md' -Destination 'dist\TaRDulator'
 New-Item -ItemType Directory -Force 'dist\TaRDulator\help' | Out-Null
 Copy-Item -Path 'help\*' -Destination 'dist\TaRDulator\help' -Force
+New-Item -ItemType Directory -Force 'dist\TaRDulator\assets\branding' | Out-Null
+Copy-Item -LiteralPath 'assets\branding\tardulator-logo-v3-delta-cartoon.png' -Destination 'dist\TaRDulator\assets\branding' -Force
 New-Item -ItemType Directory -Force 'dist\TaRDulator\source\src','dist\TaRDulator\source\tests','dist\TaRDulator\source\licenses','dist\TaRDulator\source\third-party' | Out-Null
 New-Item -ItemType Directory -Force 'dist\TaRDulator\source\assets','dist\TaRDulator\source\scripts' | Out-Null
 New-Item -ItemType Directory -Force 'dist\TaRDulator\source\help' | Out-Null
@@ -54,7 +56,7 @@ Copy-Item -LiteralPath 'src\menu_font.bin','src\ui.en.json','src\engine.en.json'
 Copy-Item -Path 'src\*.cs','src\*.py' -Destination 'dist\TaRDulator\source\src' -Force
 Copy-Item -Path 'tests\*.cs','tests\*.py' -Destination 'dist\TaRDulator\source\tests' -Force
 Copy-Item -Path 'dist\TaRDulator\licenses\*' -Destination 'dist\TaRDulator\source\licenses' -Force
-Copy-Item -LiteralPath 'build.ps1','setup.ps1','requirements-build.txt','README.md','USAGE.md','CONTRIBUTING.md','THIRD_PARTY.md','VALIDATION.md','LOADING_STRATEGIES.md','ESCAPE_COMPATIBILITY.md','CHANGELOG.md','LICENSING.md','RELEASING.md' -Destination 'dist\TaRDulator\source' -Force
+Copy-Item -LiteralPath 'build.ps1','setup.ps1','requirements-build.txt','LICENSE','README.md','USAGE.md','CONTRIBUTING.md','THIRD_PARTY.md','VALIDATION.md','LOADING_STRATEGIES.md','ESCAPE_COMPATIBILITY.md','CHANGELOG.md','LICENSING.md','RELEASING.md' -Destination 'dist\TaRDulator\source' -Force
 Copy-Item '.tools\sources\skoolkit-10.1.tar.gz' 'dist\TaRDulator\source\third-party' -Force
 Write-Host 'Ready: dist\TaRDulator\TaRDulator.exe'
 

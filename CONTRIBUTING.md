@@ -14,7 +14,7 @@
 проверку и обновляйте справку командой `python scripts/generate_profile_help.py`.
 Отмечайте отдельно проверки в эмуляторе и на реальном железе.
 
-Own-code licensing is pending; see [LICENSING.md](LICENSING.md). Do not add
+Own code is licensed under GPL-3.0-or-later; see [LICENSING.md](LICENSING.md). Do not add
 third-party code or assets without recording their origin and license.
 Use a topic branch and a pull request. Include relevant validation results
 and exact tape hashes in compatibility reports; do not upload game images.

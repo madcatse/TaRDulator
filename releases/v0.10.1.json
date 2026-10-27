@@ -1,4 +1,6 @@
 {
   "publish": true,
-  "prerelease": true
+  "prerelease": false,
+  "refresh_documentation": true,
+  "previous_archive_sha256": "2d49bb9b056c2157a5a806a72f7a0d20f63a68572bd8df248070e6312f38492b"
 }
