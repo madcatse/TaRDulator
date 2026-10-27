@@ -8,7 +8,7 @@ namespace Tap2Trd {
             // Check the actual controls in an off-screen container. Form bounds are
             // clamped to the desktop on small CI monitors, even for hidden forms.
             var content = Controls.Cast<Control>().ToArray();
-            var border = new System.Drawing.Size(Width - ClientSize.Width, Height - ClientSize.Height);
+            var border = SizeFromClientSize(System.Drawing.Size.Empty);
             using (var host = new Panel()) {
                 try {
                     foreach (var control in content) host.Controls.Add(control);
