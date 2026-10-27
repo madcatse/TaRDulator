@@ -15,7 +15,7 @@ DOCUMENTS = (
     "VALIDATION.md", "LOADING_STRATEGIES.md", "ESCAPE_COMPATIBILITY.md",
     "CHANGELOG.md", "LICENSING.md", "RELEASING.md",
 )
-LOGO = "assets/branding/tardulator-logo-v3-delta-cartoon.png"
+LOGO = "assets/branding/tardulator-logo-readme.jpg"
 
 
 def digest(data):

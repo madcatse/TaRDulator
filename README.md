@@ -1,6 +1,6 @@
 # ТаРДулятор / TaRDulator
 
-<img src="assets/branding/tardulator-logo-v3-delta-cartoon.png" alt="ТаРДулятор — кассеты Spectrum на дискетах TR-DOS / Spectrum tapes on TR-DOS disks" width="560">
+<img src="assets/branding/tardulator-logo-readme.jpg" alt="ТаРДулятор — кассеты Spectrum на дискетах TR-DOS / Spectrum tapes on TR-DOS disks" width="560">
 
 [Русский](#russian) · [English](#english) · [Скачать / Download](https://github.com/madcatse/TaRDulator/releases/latest)
 

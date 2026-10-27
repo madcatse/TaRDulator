@@ -43,13 +43,13 @@ Copy-Item -LiteralPath 'LICENSE','README.md','USAGE.md','CONTRIBUTING.md','THIRD
 New-Item -ItemType Directory -Force 'dist\TaRDulator\help' | Out-Null
 Copy-Item -Path 'help\*' -Destination 'dist\TaRDulator\help' -Force
 New-Item -ItemType Directory -Force 'dist\TaRDulator\assets\branding' | Out-Null
-Copy-Item -LiteralPath 'assets\branding\tardulator-logo-v3-delta-cartoon.png' -Destination 'dist\TaRDulator\assets\branding' -Force
+Copy-Item -LiteralPath 'assets\branding\tardulator-logo-readme.jpg' -Destination 'dist\TaRDulator\assets\branding' -Force
 New-Item -ItemType Directory -Force 'dist\TaRDulator\source\src','dist\TaRDulator\source\tests','dist\TaRDulator\source\licenses','dist\TaRDulator\source\third-party' | Out-Null
 New-Item -ItemType Directory -Force 'dist\TaRDulator\source\assets','dist\TaRDulator\source\scripts' | Out-Null
 New-Item -ItemType Directory -Force 'dist\TaRDulator\source\help' | Out-Null
 Copy-Item -Path 'help\*' -Destination 'dist\TaRDulator\source\help' -Force
 New-Item -ItemType Directory -Force 'dist\TaRDulator\source\assets\branding' | Out-Null
-Copy-Item -LiteralPath 'assets\branding\tardulator-logo-v3-delta-cartoon.png','assets\branding\tardulator-logo-v5-en-clean.png','assets\branding\TaRDulator.ico' -Destination 'dist\TaRDulator\source\assets\branding' -Force
+Copy-Item -LiteralPath 'assets\branding\tardulator-logo-v3-delta-cartoon.png','assets\branding\tardulator-logo-v5-en-clean.png','assets\branding\TaRDulator.ico','assets\branding\tardulator-logo-readme.jpg' -Destination 'dist\TaRDulator\source\assets\branding' -Force
 Copy-Item -LiteralPath 'assets\win91-font.bin','assets\win91-font.json','assets\font.bin' -Destination 'dist\TaRDulator\source\assets' -Force
 Copy-Item -Path 'scripts\*.py','scripts\*.cs' -Destination 'dist\TaRDulator\source\scripts' -Force
 Copy-Item -LiteralPath 'src\menu_font.bin','src\ui.en.json','src\engine.en.json' -Destination 'dist\TaRDulator\source\src' -Force
