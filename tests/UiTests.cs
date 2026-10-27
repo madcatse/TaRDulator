@@ -5,19 +5,37 @@ using System.Windows.Forms;
 namespace Tap2Trd {
     internal partial class MainForm {
         internal void CheckWindowLayout() {
-            foreach (var size in new[] { Size, MinimumSize, new System.Drawing.Size(1440, 1000) }) {
-                Size = size; PerformLayout();
-                if (grid.Height < 200 || log.Height < 110 || preview.Height < 120)
-                    throw new Exception("Content too small at " + size + ": grid=" + grid.Height + ", log=" + log.Height + ", preview=" + preview.Height);
-                if (grid.Parent != log.Parent || log.Top <= grid.Bottom || brand.Image == null || Icon == null)
-                    throw new Exception("Branding or left-column log missing");
-                foreach (string language in new[] { "en", "ru" }) {
-                    ChangeLanguage(language, false); PerformLayout();
-                    if (directOption.Right > directOption.Parent.ClientSize.Width || directOption.Bottom > directOption.Parent.ClientSize.Height ||
-                        englishOption.Right > englishOption.Parent.ClientSize.Width || showOutput.Right >= help.Left)
-                        throw new Exception("Options or footer clipped at " + size + " in " + language);
+            // Check the actual controls in an off-screen container. Form bounds are
+            // clamped to the desktop on small CI monitors, even for hidden forms.
+            var content = Controls.Cast<Control>().ToArray();
+            var border = new System.Drawing.Size(Width - ClientSize.Width, Height - ClientSize.Height);
+            using (var host = new Panel()) {
+                try {
+                    foreach (var control in content) host.Controls.Add(control);
+                    foreach (var size in new[] {
+                        new System.Drawing.Size(1220 + border.Width, 900 + border.Height),
+                        new System.Drawing.Size(1160, 820),
+                        new System.Drawing.Size(1440, 1000)
+                    }) {
+                        var client = new System.Drawing.Size(size.Width - border.Width, size.Height - border.Height);
+                        host.Size = client; host.PerformLayout();
+                        if (host.Size != client) throw new Exception("Test container size was constrained");
+                        if (grid.Height < 200 || log.Height < 110 || preview.Height < 120)
+                            throw new Exception("Content too small at " + size + ": grid=" + grid.Height + ", log=" + log.Height + ", preview=" + preview.Height);
+                        if (grid.Parent != log.Parent || log.Top <= grid.Bottom || brand.Image == null || Icon == null)
+                            throw new Exception("Branding or left-column log missing");
+                        foreach (string language in new[] { "en", "ru" }) {
+                            ChangeLanguage(language, false); host.PerformLayout();
+                            if (directOption.Right > directOption.Parent.ClientSize.Width || directOption.Bottom > directOption.Parent.ClientSize.Height ||
+                                englishOption.Right > englishOption.Parent.ClientSize.Width || showOutput.Right >= help.Left)
+                                throw new Exception("Options or footer clipped at " + size + " in " + language);
+                        }
+                        Console.WriteLine("PASS: layout at " + size + ": grid=" + grid.Height + ", log=" + log.Height + ", preview=" + preview.Height);
+                    }
                 }
-                Console.WriteLine("PASS: layout at " + size + ": grid=" + grid.Height + ", log=" + log.Height + ", preview=" + preview.Height);
+                finally {
+                    foreach (var control in content) Controls.Add(control);
+                }
             }
         }
         internal void CheckLanguageSwitch() {
