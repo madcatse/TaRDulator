@@ -1,0 +1,40 @@
+[
+  {
+    "path": "assets/branding/tardulator-logo-v3-delta-cartoon.png",
+    "sha256": "32202de9ac2c59ecd32be02bd491be51a7014c493ab88165a0ec8d683b333148",
+    "git_sha": "a95d7e05c1d9c121397939529f605f8fe5a06f6c",
+    "size": 1864544,
+    "chunks": [
+      "764a8288b4b93357689709d4eb5ed3adf3910ecc",
+      "74b10b458354ddeeaf7609f2b7ea8921acc6f53b",
+      "b27b93e05896adc145377243e52d1921503e819d",
+      "26fa67f859041a003b81bbea6207a38819cb59b4",
+      "1d78418337cd209f99529704ec5638ae238af6af",
+      "e6c846bdef900e043ad406cdd9e97c7b23295c14",
+      "0e44710c5eb013e8965227c969d167c7bab17fcc",
+      "3980eaed2f5c7bb44514fa53a27733f1607af208",
+      "fe003ae5930c3165b6ad2cb700bbd5b25bd44fdd",
+      "c6ee1d823eb75b9a4b38fd64833a90bb18b4f32c",
+      "58d8522382a754847d1b97db1d5c580fc1e4a219"
+    ]
+  },
+  {
+    "path": "assets/branding/tardulator-logo-v5-en-clean.png",
+    "sha256": "7a6a177e9d3041d5be891534fc4547db84c1c34ee2b9646b04cf0e6d7760fc36",
+    "git_sha": "4418547b065832c6547bc7accd2286e4a660c960",
+    "size": 1868449,
+    "chunks": [
+      "33e1c338b8f431b54dd4407dc99bc44c2de83581",
+      "a918e9a27cc23b8bd377257a50640fa215bd6f4a",
+      "1daf801618c772395872817c870d230e3215f91e",
+      "72f94a9872430441edfac5c6e314775b767696d2",
+      "22f4f580cd275fdd5cf1be181ee79d2d27476765",
+      "1e37896dd83d4cb236c09278a9f1bce1ac2102e0",
+      "75ffcbbf7246cb200600e1c931269873cec4d206",
+      "23fb04a5336e43b41240e215dae34d3389654e0d",
+      "91724bbed468dfa76b6743383f7f10f73762b574",
+      "4382957d96e5d7743267f0163eb66f1b74b318d5",
+      "40b965168854cba228de80574a5c8bd50b4ed8b5"
+    ]
+  }
+]

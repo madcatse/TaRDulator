@@ -1,0 +1,48 @@
+name: Import original artwork
+on:
+  push:
+    branches: [main]
+    paths: ['.github/import-assets.json', '.github/workflows/import-assets.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Reassemble original PNG blobs and verify both hashes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os, urllib.request
+          repo = os.environ['GITHUB_REPOSITORY']
+          headers = {'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                     'Accept': 'application/vnd.github+json',
+                     'X-GitHub-Api-Version': '2022-11-28'}
+          def api(path, payload=None):
+              body = None if payload is None else json.dumps(payload).encode()
+              req = urllib.request.Request('https://api.github.com/repos/' + repo + path,
+                                           data=body, headers=headers)
+              with urllib.request.urlopen(req, timeout=90) as response:
+                  return json.load(response)
+          with open('.github/import-assets.json', encoding='utf-8') as stream:
+              assets = json.load(stream)
+          for asset in assets:
+              parts = []
+              for sha in asset['chunks']:
+                  blob = api('/git/blobs/' + sha)
+                  assert blob['encoding'] == 'base64'
+                  parts.append(base64.b64decode(blob['content']))
+              data = b''.join(parts)
+              assert len(data) == asset['size']
+              assert hashlib.sha256(data).hexdigest() == asset['sha256']
+              result = api('/git/blobs', {'content': base64.b64encode(data).decode(),
+                                         'encoding': 'base64'})
+              assert result['sha'] == asset['git_sha']
+              print(asset['path'], result['sha'], 'VERIFIED')
+          PY
