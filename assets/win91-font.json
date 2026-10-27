@@ -1,0 +1,15 @@
+{
+  "source": "win91_optimized.tap",
+  "tap_sha256": "5f70bc45021fe199885633d5002b3aca8ac2a7c748fc950c6c3ff2880a936031",
+  "data_block": 6,
+  "header_load_address": 24078,
+  "bytes": 768,
+  "font_sha256": "765ec9d1e4437b66cc9b4a10af55792a195f2cc3aa2f305189aec0c527d0afbd",
+  "encoding": "KOI-7",
+  "missing_glyphs": [
+    "Ё",
+    "ё",
+    "Ъ",
+    "ъ"
+  ]
+}
