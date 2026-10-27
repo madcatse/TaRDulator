@@ -1,0 +1,32 @@
+# Local dependencies, tools and build products
+.tools/
+.work/
+dist/
+output/
+__pycache__/
+*.pyc
+
+# Local game collections and emulator installations
+/taps/
+/fuse/
+
+# User media, snapshots and ROMs (including mixed-case filenames)
+*.[tT][aA][pP]
+*.[tT][zZ][xX]
+*.[tT][rR][dD]
+*.[sS][cC][lL]
+*.[sS][nN][aA]
+*.[zZ]80
+*.[sS][zZ][xX]
+*.[rR][oO][mM]
+
+# Local settings and release packages
+settings.json
+releases-out/
+*.spec
+
+# Unused artwork iterations (keep only the two logos used by the application)
+/assets/branding/*.png
+!/assets/branding/tardulator-logo-v3-delta-cartoon.png
+!/assets/branding/tardulator-logo-v5-en-clean.png
+/assets/branding/*.prompt.txt
