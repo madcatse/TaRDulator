@@ -1,0 +1,53 @@
+name: Optimize README logo
+on:
+  push:
+    paths: ['.github/workflows/optimize-readme-logo.yml']
+permissions:
+  contents: write
+jobs:
+  convert:
+    runs-on: windows-2022
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Convert the existing artwork to a compact JPEG
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          Add-Type -AssemblyName System.Drawing
+          $inputPath = Join-Path $PWD 'assets/branding/tardulator-logo-v3-delta-cartoon.png'
+          $source = [System.Drawing.Image]::FromFile($inputPath)
+          $width = [Math]::Min(1120, $source.Width)
+          $height = [int][Math]::Round($source.Height * $width / $source.Width)
+          $bitmap = [System.Drawing.Bitmap]::new($width, $height, [System.Drawing.Imaging.PixelFormat]::Format24bppRgb)
+          $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+          $graphics.Clear([System.Drawing.Color]::White)
+          $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
+          $graphics.PixelOffsetMode = [System.Drawing.Drawing2D.PixelOffsetMode]::HighQuality
+          $graphics.DrawImage($source, [System.Drawing.Rectangle]::new(0, 0, $width, $height))
+          $codec = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq 'image/jpeg' }
+          foreach ($quality in @(85, 80, 75)) {
+            $parameters = [System.Drawing.Imaging.EncoderParameters]::new(1)
+            $parameters.Param[0] = [System.Drawing.Imaging.EncoderParameter]::new([System.Drawing.Imaging.Encoder]::Quality, [long]$quality)
+            $stream = [System.IO.MemoryStream]::new()
+            $bitmap.Save($stream, $codec, $parameters)
+            $bytes = $stream.ToArray()
+            $stream.Dispose()
+            $parameters.Dispose()
+            if ($bytes.Length -le 163840) { break }
+          }
+          if ($bytes.Length -gt 200000) { throw 'JPEG is larger than the reviewed budget.' }
+          $base64 = [Convert]::ToBase64String($bytes)
+          $headers = @{ Authorization = "Bearer $env:GH_TOKEN"; Accept = 'application/vnd.github+json'; 'X-GitHub-Api-Version' = '2022-11-28' }
+          $body = @{ content = $base64; encoding = 'base64' } | ConvertTo-Json -Compress
+          $blob = Invoke-RestMethod -Method Post -Headers $headers -Uri "https://api.github.com/repos/$env:GH_REPO/git/blobs" -ContentType 'application/json' -Body $body
+          $result = @{ width = $width; height = $height; quality = $quality; bytes = $bytes.Length; original_bytes = (Get-Item -LiteralPath $inputPath).Length; original_width = $source.Width; original_height = $source.Height; blob_sha = $blob.sha }
+          Write-Output ('LOGO_RESULT=' + ($result | ConvertTo-Json -Compress))
+          Write-Output ('LOGO_JPEG_BASE64=' + $base64)
+          $graphics.Dispose()
+          $bitmap.Dispose()
+          $source.Dispose()
