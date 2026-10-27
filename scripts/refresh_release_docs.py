@@ -83,6 +83,8 @@ def main():
     after.update(sources)
     for name in DOCUMENTS:
         after[name] = (ROOT / name).read_bytes()
+    for license_file in sorted((ROOT / "licenses").glob("*.txt")):
+        after["licenses/" + license_file.name] = license_file.read_bytes()
     after[LOGO] = (ROOT / LOGO).read_bytes()
     after.pop("BUILD_INFO.json")
     runtime = {k: v for k, v in before.items()
@@ -97,7 +99,7 @@ def main():
     manifest = {
         "version": original_manifest["version"],
         "source_commit": commit,
-        "binary_source_commit": original_manifest["source_commit"],
+        "binary_source_commit": original_manifest.get("binary_source_commit", original_manifest["source_commit"]),
         "previous_archive_sha256": old_digest,
         "runtime_files_preserved": len(runtime),
         "files": {k: digest(v) for k, v in sorted(after.items())},

@@ -1,0 +1,16 @@
+OpenSSL 3.x runtime libraries bundled with Python
+
+Copyright (c) 1998-2025 The OpenSSL Project
+Copyright (c) 1995-1998 Eric A. Young, Tim J. Hudson
+
+OpenSSL is licensed under the Apache License 2.0.
+The unmodified license text is in OpenSSL-Apache-2.0.txt.
+
+Upstream: https://www.openssl.org/
+Sources: https://github.com/openssl/openssl
+License and copyright reference:
+https://github.com/openssl/openssl/tree/openssl-3.0.16
+
+This notice was assembled for TaRDulator from the upstream README.md
+copyright section and LICENSE.txt. The upstream tree has no separate
+NOTICE file. No OpenSSL library was modified by TaRDulator.

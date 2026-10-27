@@ -16,6 +16,12 @@
   `3176ff13f6d2d6196e69e9afcf62475a24a038e0adcdb570aa7f3bb9908264f3`.
 - **Python 3.12**, Python Software Foundation и участники проекта — PSF License; https://www.python.org/psf/license/
   Runtime включён в автономный конвертер PyInstaller. Лицензия: `licenses/Python.txt`.
+- **OpenSSL 3.x**, The OpenSSL Project, Eric A. Young, Tim J. Hudson — Apache-2.0.
+  https://www.openssl.org/ · https://github.com/openssl/openssl
+  Библиотеки libssl и libcrypto входят в упакованную среду Python.
+  Лицензия: `licenses/OpenSSL-Apache-2.0.txt`; уведомление об авторстве:
+  `licenses/OpenSSL-NOTICE.txt`. Компоненты Microsoft runtime и остальные
+  уведомления Python описаны в `licenses/Python.txt`.
 - **PyInstaller 6.16.0**, авторы и участники PyInstaller — GPL с исключением для загрузчика,
   https://pyinstaller.org/; используется только для упаковки. Лицензия: `licenses/PyInstaller.txt`.
 - **ROM Sinclair Spectrum** входят в ресурсы SkoolKit. Из стандартного ROM также
@@ -65,6 +71,12 @@ TaRDulator's own code is GPL-3.0-or-later; see [LICENSE](LICENSE) and
   The runtime is bundled with the frozen converter.
   [PSF licensing](https://www.python.org/psf/license/); the full set of included
   notices is in `licenses/Python.txt`.
+- **OpenSSL 3.x**, The OpenSSL Project, Eric A. Young, Tim J. Hudson — Apache-2.0.
+  [Website](https://www.openssl.org/) · [Source](https://github.com/openssl/openssl).
+  The libssl and libcrypto libraries are bundled with Python.
+  License: `licenses/OpenSSL-Apache-2.0.txt`; copyright notice:
+  `licenses/OpenSSL-NOTICE.txt`. Microsoft runtime components and the other
+  Python notices are covered in `licenses/Python.txt`.
 - **PyInstaller 6.16.0**, PyInstaller authors and contributors.
   [Website](https://pyinstaller.org/). Used for standalone packaging.
   GPL with a bootloader exception; see `licenses/PyInstaller.txt`.

@@ -2,5 +2,6 @@
   "publish": true,
   "prerelease": false,
   "refresh_documentation": true,
-  "previous_archive_sha256": "2d49bb9b056c2157a5a806a72f7a0d20f63a68572bd8df248070e6312f38492b"
+  "previous_archive_sha256": "f75fa1ecea4dc7b07a8dfd0c0372665a1d2dd3ae673a07c304112ec4f66e052d",
+  "documentation_revision": 2
 }

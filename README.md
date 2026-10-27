@@ -68,6 +68,7 @@
 | [SkoolKit](https://skoolkit.ca/) | Richard Dymond и участники проекта | Эмуляция загрузки и снимки; GPL-3.0-or-later |
 | [Z80to](https://github.com/TomDDG/Z80to) | Tom Dalby (TomDDG) | Сжатие и дисковые загрузчики; MIT |
 | [Python](https://www.python.org/) | Python Software Foundation и участники проекта | Среда выполнения конвертера; PSF License и включённые уведомления |
+| [OpenSSL](https://www.openssl.org/) | The OpenSSL Project, Eric A. Young, Tim J. Hudson | Библиотеки в составе Python; Apache-2.0 |
 | [PyInstaller](https://pyinstaller.org/) | Авторы и участники PyInstaller | Автономная упаковка; GPL с исключением для загрузчика |
 
 Используются также ROM и стандартный шрифт Sinclair ZX Spectrum, а для кириллицы — глифы из Windows’91. Их происхождение, отдельные условия и известные сведения об авторстве приведены в [THIRD_PARTY.md](THIRD_PARTY.md); тексты лицензий — в [licenses/](licenses/). Автор и лицензия шрифта Windows’91 в исходном материале не указаны; лицензия собственного кода не распространяется на чужие ресурсы.
@@ -137,6 +138,7 @@ Thank you to the authors of the components on which the application is built:
 | [SkoolKit](https://skoolkit.ca/) | Richard Dymond and contributors | Loading emulation and snapshots; GPL-3.0-or-later |
 | [Z80to](https://github.com/TomDDG/Z80to) | Tom Dalby (TomDDG) | Compression and disk loaders; MIT |
 | [Python](https://www.python.org/) | Python Software Foundation and contributors | Converter runtime; PSF License and included notices |
+| [OpenSSL](https://www.openssl.org/) | The OpenSSL Project, Eric A. Young, Tim J. Hudson | Libraries bundled with Python; Apache-2.0 |
 | [PyInstaller](https://pyinstaller.org/) | PyInstaller authors and contributors | Standalone packaging; GPL with a bootloader exception |
 
 The application also uses Sinclair ZX Spectrum ROMs and the standard ROM font, plus glyphs from Windows’91 for Cyrillic text. Their provenance, separate terms and known authorship information are recorded in [THIRD_PARTY.md](THIRD_PARTY.md); license texts are in [licenses/](licenses/). The source material does not identify the Windows’91 font's author or license; the license for TaRDulator's own code does not cover third-party resources.
