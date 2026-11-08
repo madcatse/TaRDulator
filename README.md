@@ -14,7 +14,7 @@
 
 ### Скачать и запустить
 
-Текущая версия — **0.10.1**. Скачайте **`TaRDulator-v0.10.1-win-x64.zip`** со [страницы релиза](https://github.com/madcatse/TaRDulator/releases/tag/v0.10.1), распакуйте всю папку `TaRDulator` и запустите `TaRDulator.exe`.
+Текущая версия — **0.11.0**. Скачайте **`TaRDulator-v0.11.0-win-x64.zip`** со [страницы релиза](https://github.com/madcatse/TaRDulator/releases/tag/v0.11.0), распакуйте всю папку `TaRDulator` и запустите `TaRDulator.exe`.
 
 Нужны **Windows 10/11 x64 и .NET Framework 4.8**. Установка приложения и Python не требуется; все компоненты конвертера находятся в архиве. Сохраняйте папки `engine`, `help` и остальные файлы рядом с EXE. Программа работает без подключения к интернету.
 
@@ -25,6 +25,7 @@
 - **Визуальный редактор**: расположение надписей, цвета и яркость, одна или две колонки, собственные заголовки и подсказки.
 - **Фон меню**: импорт Spectrum SCR, преобразование PNG/JPEG/BMP в экран 256 × 192, экспорт фона и готовой страницы в SCR.
 - **Сохранение оформления** в `.t2menu` для повторного использования. Макет содержит фон и оформление страниц; кассеты и названия игр в него не входят.
+- **Переносимые имена файлов**: стабильный код каждой игры вместо `G00`/`G01`; комплект для копирования между дисками указан в отчёте.
 - **Расчёт занятого места** до создания TRD, сжатие данных и отчёт `.report.json` с параметрами и журналом конвертации.
 - **Профили совместимости** для отдельных программ и вариантов кассет, в том числе некоторых составных загрузок. Профили выбираются по полному SHA-256 файла, а не по его названию.
 - **Русский и английский интерфейс**, подробная автономная справка по кнопке **«Справка» / F1**.
@@ -84,7 +85,7 @@
 
 ### Download and run
 
-The current version is **0.10.1**. Download **`TaRDulator-v0.10.1-win-x64.zip`** from the [release page](https://github.com/madcatse/TaRDulator/releases/tag/v0.10.1), extract the complete `TaRDulator` folder, and run `TaRDulator.exe`.
+The current version is **0.11.0**. Download **`TaRDulator-v0.11.0-win-x64.zip`** from the [release page](https://github.com/madcatse/TaRDulator/releases/tag/v0.11.0), extract the complete `TaRDulator` folder, and run `TaRDulator.exe`.
 
 Requires **Windows 10/11 x64 and .NET Framework 4.8**. No application or Python installation is needed; the archive includes the converter's runtime components. Keep `engine`, `help` and the other files beside the EXE. The application works offline.
 
@@ -95,6 +96,7 @@ Requires **Windows 10/11 x64 and .NET Framework 4.8**. No application or Python 
 - **Visual editor**: text positioning, colours and brightness, one or two columns, custom headings and hints.
 - **Menu background**: import Spectrum SCR, convert PNG/JPEG/BMP to a 256 × 192 screen, and export the background or a completed menu page as SCR.
 - **Save layouts** as `.t2menu` for reuse. A layout contains the background and page styling; it does not include tapes or game titles.
+- **Portable filenames**: a stable game identifier replaces `G00`/`G01`; each complete bundle is listed in the report for copying between disks.
 - **Calculate disk usage** before creating a TRD, compress data, and save conversion settings and logs in a `.report.json` report.
 - **Compatibility profiles** for specific programs and tape variants, including some multipart loads. Profiles match the complete file SHA-256, rather than its name.
 - **Russian and English interface**, with a detailed offline manual available through **Help / F1**.

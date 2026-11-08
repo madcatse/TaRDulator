@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -307,6 +307,7 @@ namespace Tap2Trd {
                 AppendLog("  " + e["title"] + ": RAM " + row.Cells["Ram"].Value + UiText.T(" → диск ") + row.Cells["Disk"].Value
                     + UiText.T(" КиБ; перенос ") + (Convert.ToString(e["result_machine"]) == "" ? UiText.T("не определён") : e["result_machine"] + UiText.T("К")) + "; PC=" + e["pc"]);
                 AppendLog("  " + e["model_reason"]);
+                if (e.ContainsKey("loader")) AppendLog("  " + UiText.T("Файлы TR-DOS: ") + e["loader"] + "*");
                 if (e.ContainsKey("strategy_name")) AppendLog("  " + e["strategy_name"]);
                 if (e.ContainsKey("profile_note")) AppendLog("  " + e["profile_note"]);
                 if (warning) AppendLog("  " + e["warning"]);

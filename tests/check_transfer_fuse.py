@@ -5,23 +5,25 @@ data in every 128K bank. Requires local Fuse; no user TAP files are needed.
 """
 from pathlib import Path
 import json
+import hashlib
 import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 import engine
+import disk_names
 import menu_screen
 from skoolkit.snapshot import write_snapshot
 
 
 def main():
     results = []
-    cases = [(model, mode, False) for model, mode in
+    cases = [(model, mode, False, launch) for launch in ("menu", "direct") for model, mode in
              (("48", "auto"), ("128", "auto"), ("128", "preserve"), ("128", "48"))]
-    cases.append(("128", "preserve", True))
-    for model, mode, negative_control in cases:
-        directory = ROOT / ".work/transfer-fuse" / (model + "-" + mode + ("-negative" if negative_control else ""))
+    cases.append(("128", "preserve", True, "menu"))
+    for model, mode, negative_control, launch in cases:
+        directory = ROOT / ".work/transfer-fuse" / (model + "-" + mode + "-" + launch + ("-negative" if negative_control else ""))
         directory.mkdir(parents=True, exist_ok=True)
         ram = [0] * 49152
         ram[6912:7371] = [(i * 37 + 19) % 256 for i in range(459)]
@@ -37,12 +39,23 @@ def main():
         original = snapshot.read_bytes()
         files, info = engine.pack_snapshot(snapshot, mode)
         assert snapshot.read_bytes() == original
+        identity = disk_names.bundle_id(files, hashlib.sha256(original).hexdigest(), {"transfer_mode": mode})
+        files = disk_names.rename_bundle(files, "TST.", disk_names.short_name(identity))
+        # Copy the complete bundle from an independently written source disk.
+        # Change both its sector locations and directory order at destination.
+        source = engine.write_trd(files, "SOURCE")
+        files = list(reversed(engine.read_trd(source)))
         loader = next(f.name for f in files if f.kind == "B")
         games = [{"title": "MEMORY TEST", "loader": loader}]
         screen = menu_screen.render(engine.builtin_background(), "TEST", games)
         disk = directory / "test.trd"
-        disk.write_bytes(engine.write_trd([engine.menu_file("TEST", games),
-            engine.DiskFile("MENU", "C", 16384, 6912, screen)] + files, "TEST"))
+        if launch == "direct":
+            basic = next(f for f in files if f.kind == "B")
+            startup_files = [engine.DiskFile("boot", "B", basic.parameter, basic.length, basic.data)]
+        else:
+            startup_files = [engine.menu_file("TEST", games), engine.DiskFile("MENU", "C", 16384, 6912, screen)]
+        disk.write_bytes(engine.write_trd(startup_files +
+            [engine.DiskFile("UNUSED", "C", 32768, 1024, bytes(1024))] + files, "TEST"))
         addresses = list(range(23296, 23755)) + [24576, 32768, 49152, 60000, 65535]
         differences = " || ".join(f"[{a}] != {ram[a-16384]}" for a in addresses)
         commands = ("tbreakpoint 7997 if [23621] == 144 && [23622] == 1\n"
@@ -73,6 +86,7 @@ def main():
             result = {"source": model, "transfer_mode": mode, "result_machine": info["result_machine"],
                       "passed": process.returncode == (43 if negative_control else 42), "exit_code": process.returncode,
                       "negative_control": negative_control,
+                      "loader": loader, "copied_and_reordered": True, "launch_mode": launch,
                       "printer_and_system_bytes": 459, "extra_ram_probes": 5,
                       "bank_probes": bank_probes, "log": output.decode("utf-8", "replace")}
         except subprocess.TimeoutExpired:
