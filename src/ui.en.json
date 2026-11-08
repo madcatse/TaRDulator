@@ -153,6 +153,7 @@
   "Меню сборника включено. Расположение и надписи сохранены.": "Collection menu enabled. Layout and labels have been preserved.",
   "Запуск дискеты": "Disk startup",
   "Журнал": "Log",
+  "Файлы TR-DOS: ": "TR-DOS files: ",
   "Помощь": "Help",
   "Не удалось открыть справку. Откройте HTML-файл в папке help рядом с программой.": "Could not open help. Open the HTML file in the help folder next to the application.",
   "Меню сборника": "Collection menu",

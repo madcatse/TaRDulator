@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.0 — 2026-11-08
+
+- Replaced position-based G00/G01 filenames with stable seven-character game
+  identifiers and eight-character part names. Identity includes the tape,
+  conversion options and packed contents, independent of paths and menu order.
+- Rebuild generated BASIC filename references, line lengths and autostart
+  trailers; compressed CODE payloads are unchanged. Handle repeated games and
+  short-hash collisions within a collection without duplicate directory entries.
+- Keep a portable named loader on direct-launch disks alongside the boot copy.
+- Show each game's filename prefix in the log and list its files in the report.
+- Document copying complete bundles, destination menu maintenance, collision
+  limits and rebuilding older disks. Existing TRD images are not modified.
+
 ## 0.10.1 — 2026-10-27
 
 - Added SHA-256 identification and a shared catalog for special TAP/TZX files.

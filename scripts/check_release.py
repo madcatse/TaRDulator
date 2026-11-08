@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 import os
+import re
 import struct
 import subprocess
 import sys
@@ -49,6 +50,16 @@ def main():
             assert actual['version'] == expected['version'] == engine.VERSION
             assert actual['disk_sha256'] == expected['disk_sha256'] == hashlib.sha256(disk).hexdigest()
             assert actual['launch_mode'] == mode
+            game = actual['games'][0]
+            assert re.fullmatch(r'[0-9A-Z]{7}', game['loader'])
+            assert actual['games'][0]['files'] == expected['games'][0]['files']
+            files = engine.read_trd(disk)
+            bundle = {(f['name'], f['type']) for f in game['files']}
+            assert bundle <= {(f.name, f.kind) for f in files}
+            assert ('boot', 'B') not in bundle
+            if mode == 'direct':
+                assert files[0].name == 'boot'
+                assert files[0].data == next(f.data for f in files if f.name == game['loader'])
             assert tape.read_bytes() == original
             print('PASS: frozen engine equals source, launch mode=' + mode)
     print('Portable engine smoke checks passed.')

@@ -45,7 +45,8 @@ class FeedbackTests(unittest.TestCase):
             self.assertEqual(f.data, bytes(blocks[index].data[1:-1]))
             self.assertEqual(f.parameter, 25000)
         self.assertEqual(info['tape_profile'], 'milky2-disk-chain')
-        self.assertEqual([f.name for f in files[1:]], ['G00.A', 'G00.B'])
+        self.assertEqual([f.name for f in files[1:]], [info['loader'] + 'A', info['loader'] + 'B'])
+        self.assertIn(('"' + info['loader'] + '"').encode('ascii'), files[0].data)
         self.assertEqual(info['part_count'], 2)
         self.assertEqual(info['repeat_from_part'], 2)
         self.assertEqual(path.read_bytes(), before)
@@ -55,7 +56,7 @@ class FeedbackTests(unittest.TestCase):
 
     def test_direct_disk_uses_actual_loader_and_has_no_menu(self):
         def convert(*args):
-            return [engine.basic_file('G00', b'PAYLOAD'), engine.DiskFile('G00.M', 'C', 32768, 1, b'x')], {'title': 'Demo'}
+            return [engine.basic_file('G00', b'PAYLOAD'), engine.DiskFile('G00.M', 'C', 32768, 1, b'x')], {'title': 'Demo', 'loader': 'G00'}
         with tempfile.TemporaryDirectory() as d:
             target = Path(d) / 'direct.trd'
             request = {'launch_mode': 'direct', 'games': [{'path': 'demo.tap'}],
@@ -64,7 +65,8 @@ class FeedbackTests(unittest.TestCase):
                 result = engine.build(request)
                 measured = engine.build({**request, 'action': 'measure'})
             files = engine.read_trd(target.read_bytes())
-            self.assertEqual([(f.name, f.kind) for f in files], [('boot', 'B'), ('G00.M', 'C')])
+            self.assertEqual([(f.name, f.kind) for f in files], [('boot', 'B'), ('G00', 'B'), ('G00.M', 'C')])
+            self.assertEqual(files[0].data, files[1].data)
             self.assertEqual(files[0].data[:7], b'PAYLOAD')
             self.assertEqual(result['menu_bytes'], 0)
             self.assertEqual(result['page_count'], 0)

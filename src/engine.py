@@ -26,6 +26,7 @@ import tape_support
 import tape_profiles
 import machine_probe
 import load_strategies
+import disk_names
 
 from app_version import VERSION
 LOAD_TIMEOUT = 1200  # Spectrum seconds; simulation usually runs much faster.
@@ -464,17 +465,17 @@ def convert_native_chain(item, analysis, stem, profile):
         **load_strategies.describe(profile)}
 
 
-def convert_game(item: dict, index: int, work: Path) -> tuple[list[DiskFile], dict]:
+def _convert_game(item: dict, index: int, work: Path) -> tuple[list[DiskFile], dict]:
     path = Path(item["path"]).resolve()
     analysis = inspect_tap(path)
     profile = tape_profiles.identify(path, analysis['sha256'])
     event('profile', index=index, sha256=analysis['sha256'],
           **tape_profiles.catalog_info(path, analysis['sha256']))
     tape_profiles.require_supported(profile)
-    # Z80to uses the first three filename characters for its data files.
-    # Three hex characters are unique even for duplicate source basenames.
-    stem = f"G{index:02X}"
-    game_dir = work / stem
+    # Keep intermediate bytes independent of the list position. Z80to uses
+    # only three filename characters; rename its generated BASIC afterwards.
+    stem = "TMP"
+    game_dir = work / f"G{index:02X}"
     game_dir.mkdir()
     snapshot_path = game_dir / (stem + ".z80")
     machine = str(item.get("machine", "auto"))
@@ -501,6 +502,17 @@ def convert_game(item: dict, index: int, work: Path) -> tuple[list[DiskFile], di
                    "loader": stem, "sha256": analysis["sha256"], "tap_bytes": analysis["size"],
                    "bytes": sum(f.sectors*256 for f in files), "format": analysis["format"], "start": start,
                    "requested_transfer_mode": mode, **info, **packing, **load_strategies.describe(profile)}
+
+
+def convert_game(item: dict, index: int, work: Path) -> tuple[list[DiskFile], dict]:
+    files, game = _convert_game(item, index, work)
+    identity = disk_names.bundle_id(files, game["sha256"], item)
+    stem = disk_names.short_name(identity)
+    files = disk_names.rename_bundle(files, "TMP.", stem)
+    game.update(loader=stem, file_prefix=stem, file_id=identity,
+                naming_version=disk_names.NAMING_VERSION, files=disk_names.manifest(files),
+                bytes=sum(f.sectors * 256 for f in files))
+    return files, game
 
 
 def build(request: dict) -> dict:
@@ -535,11 +547,14 @@ def build(request: dict) -> dict:
             raise ValueError(tr('Фон SCR должен содержать ровно 6912 байт'))
     title = menu_screen.text(request.get("title", "КОЛЛЕКЦИЯ ИГР"))
     layouts = menu_screen.normalize_pages(None if direct else request.get("pages"), None if direct else request.get("layout"), len(items))
-    menu_games = [{"title": item.get("title") or Path(item["path"]).stem, "loader": f"G{i:02X}"}
+    # Reserve the exact menu size before conversion; real loader names have
+    # the same seven-character length and are inserted as games complete.
+    menu_games = [{"title": item.get("title") or Path(item["path"]).stem, "loader": "0000000"}
                   for i, item in enumerate(items)]
     menu_files = [] if direct else create_menu_files(background, title, menu_games, layouts)
     all_files = []
     games = []
+    used_stems = set()
     started = time.monotonic()
     # Intermediates never touch the source tapes or working directory.
     with tempfile.TemporaryDirectory(prefix=".tardulator-work-", dir=target.parent if target else None) as directory:
@@ -548,18 +563,31 @@ def build(request: dict) -> dict:
             event("progress", index=i, count=len(items), text=tr('Загрузка {0}/{1}: {2}', i + 1, len(items), Path(item['path']).name))
             try:
                 files, game = convert_game(item, i, work)
+                if game["loader"] in used_stems:
+                    collision = 1
+                    while disk_names.short_name(game["file_id"], collision) in used_stems:
+                        collision += 1
+                    stem = disk_names.short_name(game["file_id"], collision)
+                    files = disk_names.rename_bundle(files, game["file_prefix"], stem)
+                    game.update(loader=stem, file_prefix=stem, name_collision=collision,
+                                files=disk_names.manifest(files))
+                used_stems.add(game["loader"])
             except Exception as exc:
                 event('game_error', index=i, message=str(exc),
                       unsupported=isinstance(exc, tape_profiles.UnsupportedTape))
                 raise ValueError(f"{Path(item['path']).name}: {exc}") from exc
             all_files.extend(files)
             games.append(game)
+            menu_games[i] = game
             event("game", index=i, **{k: v for k, v in game.items() if k not in ("log", "converter_log")})
             check_capacity(menu_files + all_files)
         if direct:
-            # The first BASIC is the program's own loader, not a wrapper that
-            # loads another BASIC. TR-DOS's standard RUN boots it directly.
-            next(f for f in all_files if f.kind == 'B').name = 'boot'
+            # Keep a portable named loader as well as the disk's boot entry.
+            # Both contain the actual loader; no extra BASIC LOAD is needed.
+            loader = next(f for f in all_files if f.kind == 'B')
+            all_files.insert(0, DiskFile('boot', 'B', loader.parameter, loader.length, loader.data))
+        else:
+            menu_files = create_menu_files(background, title, menu_games, layouts)
         files = menu_files + all_files
         image = write_trd(files, title)
         read_trd(image)  # Validate exact image before committing it.
